@@ -1,0 +1,77 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+
+.board {
+  background-color: #005eb3;
+  width: 800px;
+  margin-top: 5%;
+  margin-left: 5%;
+  padding: 8px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  float: left;
+}
+
+.cell {
+
+  background: white;
+  display: inline-block;
+  padding: 45px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 0 3px white inset;
+  margin: 4px;
+  cursor: pointer;
+}
+
+.cell.bot{
+  background-color: yellow;
+
+  border: 3px solid yellow;
+  box-shadow: 0 0 0 3px #e19c19 inset;
+}
+
+.cell.player{
+  background-color: red;
+  border: 3px solid red;
+  box-shadow: 0 0 0 3px #8b0000 inset;
+}
+
+.cell.over{
+  pointer-events: none;
+}
+
+#newGame{
+  margin-top: 10%;
+  margin-left: 2%;
+  margin-bottom: 20px;
+  float: left;
+}
