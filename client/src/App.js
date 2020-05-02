@@ -19,6 +19,7 @@ class App extends Component {
         [0, 0, 0, 0, 0, 0, 0],
       ],
       winner: '',
+      depth: 3,
     };
   }
 
@@ -83,40 +84,19 @@ class App extends Component {
 
   }
 
-  async test() {
-    var array = [
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 3, 0, 0],
-      [0, 0, 5, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 1, 0, 0, 1, 2],
-    ];
 
-    await fetch("http://localhost:8070/array", {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(array),
-    })
-      .then((response) => response.text())
-      .catch((error) => console.error(error));
-
-
-  }
 
 
   async sendPlaceCoin(column) {
 
+    console.log("depth : " + this.state.depth);
     var test = await this.playbleCol(column);
 
     if (test === "true") {
 
       //send player's move and get bot's move
-      
-      await fetch("http://localhost:8070/place/" + column, {
+
+      await fetch("http://localhost:8070/place/" + column+"/"+this.state.depth, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -125,13 +105,18 @@ class App extends Component {
         body: JSON.stringify(this.state.board),
       })
         .then((response) => response.text())
-        .then((response) => this.setState({board:JSON.parse(response)}))
+        .then((response) => this.setState({ board: JSON.parse(response) }))
         .catch((error) => console.error(error));
 
       await this.isOver();
 
 
     }
+  }
+
+  depthSelection(value) {
+    console.log("depth : " + value.target.value);
+    this.setState({ depth: value.target.value });
   }
 
   render() {
@@ -150,9 +135,21 @@ class App extends Component {
 
         <div className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer" />
         <div className="board">{cells}</div>
-        <button id="button" onClick={this.newGame.bind(this)}>New game</button>
-       
 
+        <div className="param">
+          <button id="button" onClick={this.newGame.bind(this)}>New game</button>
+          <br />
+          <br />
+          Depth selection : 
+          <br />
+          <select id="depth-select" value={this.state.depth} onChange={this.depthSelection.bind(this)}>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+          </select>
+        </div>
       </div>
     );
   }

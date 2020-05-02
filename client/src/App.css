@@ -28,14 +28,20 @@
   color: #61dafb;
 }
 
+header {
+  width: 800px;
+  margin-left: 4.5%;
+  padding: 8px;
+  padding-top: 5px;
+  float: left;
+}
 
 .board {
   background-color: #005eb3;
   width: 800px;
-  margin-top: 5%;
+  margin-bottom: 5%;
   margin-left: 5%;
   padding: 8px;
-  padding-top: 20px;
   padding-bottom: 20px;
   float: left;
 }
@@ -69,9 +75,14 @@
   pointer-events: none;
 }
 
-#button{
-  margin-top: 10%;
-  margin-left: 2%;
+.param{
+  padding-top: 5%;
   margin-bottom: 20px;
+  margin: 5%;
   float: left;
 }
+
+#button{
+
+}
+

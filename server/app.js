@@ -7,7 +7,6 @@ var cors = require('cors');
 var Board = require('./src/game.js');
 var Bot = require('./src/ai.js');
 
-var depth = 6;
 
 var app = express();
 
@@ -31,18 +30,16 @@ app.get('/init', function (req, res, next) {
 });
 
 app.post('/over', function (req, res, next) {
-  console.log("winner : "+Board.terminalTest(req.body));
   res.send("" + Board.terminalTest(req.body));
 });
 
 //place users coin and send bot's move to client
-app.post('/place/:col', function (req, res, next) {
-
+app.post('/place/:col/:depth', function (req, res, next) {
   var col = req.params.col;
   var newBoard = req.body;
   Board.place(newBoard, col, 1);
   if (Board.terminalTest(newBoard) != "1") {
-    newBoard = Bot.decision(newBoard, depth);
+    newBoard = Bot.decision(newBoard, req.params.depth);
     res.send(newBoard);
   }
 
