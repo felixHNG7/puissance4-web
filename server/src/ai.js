@@ -5,8 +5,12 @@ var ai = {};
 
 
 
-
-twoEnd = function (oneEnd)//tell if a serie of coins is blocked from each sides
+/**
+  * @desc //tell if a serie of coins is blocked from each sides
+  * @param {bool} if one side is already blocked or not
+  * @return bool
+*/
+twoEnd = function (oneEnd)
 {
     if (oneEnd)
         return true;
@@ -14,6 +18,15 @@ twoEnd = function (oneEnd)//tell if a serie of coins is blocked from each sides
         return false;
 }
 
+
+/**
+  * @desc gives the weight of a move
+  * @param {int[][]} game board
+  * @param {int} row index 
+  * @param {int} column index 
+  * @param {int} player
+  * @return int - weight
+*/
 comptHorizontal = function (i, j, board, player) {
     var one_End = false;//line blocked from one side
     var two_End = false;//line blocked from each sides, when a serie is black from each sides then this serie is worthless
@@ -104,17 +117,17 @@ comptVertical = function (i, j, board, player) {
 
 comptDiag1 = function (i, j, board, player)//desc diag
 {
-    var one_End = false;//ligne bloqué à une extrémité
-    var two_End = false;//ligne bloqué aux deux extremité
+    var one_End = false;
+    var two_End = false;
     var count = 0;
-    if (i == 0 || j == 0) // bloqué par la bordure du plateau
+    if (i == 0 || j == 0)
         one_End = true;
-    else if (board[i - 1][j - 1] != player && board[i - 1][j - 1] != 0)// si la case en haut à gauche est un pion
+    else if (board[i - 1][j - 1] != player && board[i - 1][j - 1] != 0)
         one_End = true;
     for (var ii = 0; ii < 4; ii++) {
-        if (i + ii <= 5 && j + ii <= 6 && board[i + ii][j + ii] == player)//si pion du player
+        if (i + ii <= 5 && j + ii <= 6 && board[i + ii][j + ii] == player)
             count++;
-        if (i + ii <= 5 && j + ii <= 6 && board[i + ii][j + ii] != player && board[i + ii][j + ii] != 0)//si un pion adverse
+        if (i + ii <= 5 && j + ii <= 6 && board[i + ii][j + ii] != player && board[i + ii][j + ii] != 0)
         {
             two_End = twoEnd(one_End);
             break;
@@ -146,19 +159,19 @@ comptDiag1 = function (i, j, board, player)//desc diag
 
 comptDiag2 = function (i, j, board, player)//asc diag
 {
-    var two_End = false;//ligne bloqué à une extrémité
-    var two_End = false;//ligne bloqué aux deux extremité
+    var two_End = false;
+    var two_End = false;
     var count = 0;
-    if (i == 5 || j == 0) // bloqué par la bordure du plateau
+    if (i == 5 || j == 0) 
         two_End = true;
-    else if (board[i + 1][j - 1] != player && board[i + 1][j - 1] != 0)// si la case en bas à gauche est un pion
+    else if (board[i + 1][j - 1] != player && board[i + 1][j - 1] != 0)
         two_End = true;
     for (var ii = 0; ii < 5; ii++) {
-        if (i - ii >= 0 && j + ii <= 6 && board[i - ii][j + ii] == player)//si pion du player
+        if (i - ii >= 0 && j + ii <= 6 && board[i - ii][j + ii] == player)
             count++;
-        if (i - ii >= 0 && j + ii <= 6 && board[i - ii][j + ii] != player && board[i - ii][j + ii] != 0)//si un pion adverse
+        if (i - ii >= 0 && j + ii <= 6 && board[i - ii][j + ii] != player && board[i - ii][j + ii] != 0)
         {
-            two_End = twoEnd(two_End);// fonction qui return true si y a déjà une des extrémités de bloqué
+            two_End = twoEnd(two_End);
             break;
         }
         if (j + ii <= 6 && i - ii >= 0 && board[i - ii][j + ii] == 0)
@@ -166,7 +179,7 @@ comptDiag2 = function (i, j, board, player)//asc diag
     }
     if (two_End)
         return 0;
-    if (two_End)//attribution de la valeur d'un coup en fonction de sa position
+    if (two_End)
     {
         if (count < 3)
             return 0;
@@ -185,6 +198,11 @@ comptDiag2 = function (i, j, board, player)//asc diag
     return count;
 }
 
+/**
+  * @desc gives how much coins are aligned and sum the weight for a move for each players
+  * @param {int[][]} game board
+  * @return int[] weight for both players
+*/
 aligned = function (board) {
 
     var nb_series = [0, 0]; //serie of aligned coins for each player
@@ -203,7 +221,12 @@ aligned = function (board) {
     return nb_series;
 }
 
-utility = function (board) // returns the weight of a move
+/**
+  * @desc real weight by substracting player's board weight to bot's weight, if a move is winning then the weight is adjusted
+  * @param {int[][]} game board
+  * @return int
+*/
+utility = function (board) 
 {
     var winner = Board.terminalTest(board); 
     if (winner != 0) { //giving infite weight to a winning move
