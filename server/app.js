@@ -7,9 +7,7 @@ var cors = require('cors');
 var Board = require('./src/game.js');
 var Bot = require('./src/ai.js');
 
-
-var board = {};
-var depth = 20;
+var depth = 6;
 
 var app = express();
 
@@ -29,41 +27,38 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Routes
 app.get('/init', function (req, res, next) {
   board = Board.initBoard();
-  console.table(board);
   res.send(board);
 });
 
-app.get('/over', function (req, res, next) {
-
-  console.log("test : " + Board.terminalTest(board));
-  res.send("" + Board.terminalTest(board));
+app.post('/over', function (req, res, next) {
+  console.log("winner : "+Board.terminalTest(req.body));
+  res.send("" + Board.terminalTest(req.body));
 });
 
 //place users coin and send bot's move to client
-app.get('/place/:col', function (req, res, next) {
+app.post('/place/:col', function (req, res, next) {
 
   var col = req.params.col;
-  Board.place(board, col, 1);
-
-  if (Board.terminalTest(board) != "1") {
-    var bot_move = Bot.decision(board, depth);
-    console.table(board);
-    console.log("move : " + bot_move);
-
-    res.send("" + bot_move);
+  var newBoard = req.body;
+  Board.place(newBoard, col, 1);
+  if (Board.terminalTest(newBoard) != "1") {
+    newBoard = Bot.decision(newBoard, depth);
+    res.send(newBoard);
   }
 
   else{
-    res.send("8");
+    res.send(newBoard);
   }
 
 
 });
 
-app.get('/playable/:col', function (req, res) {
+app.post('/playable/:col', function (req, res) {
   var col = req.params.col;
-  res.send(Board.playableCol(board, col));
-})
+  res.send(Board.playableCol(req.body, col));
+});
+
+
 
 
 // catch 404 and forward to error handler

@@ -7,22 +7,21 @@ class BoardCell extends Component {
         const status = this.props.winner;//game is over not
         const j = this.props.j;
         const i = this.props.i;
-        let classes = "cell";
-        if (board[j][i] !== undefined) {
+        var classes = "cell";
+        if (board[i][j] !== 0) {
 
-            if (board[j][i] === "1")
+            if (board[i][j] === 1)
                 classes += " player";
             else
                 classes += " bot";
 
         }
-        console.log(status);
         if (status !== '' && status !== '0') {
             classes += " over";
         }
 
         return (
-            <div className={classes} disabled onClick={() => this.props.onClick(this.props.j)}>
+            <div className={classes} onClick={() => this.props.onClick(this.props.j)}>
 
             </div>
         )

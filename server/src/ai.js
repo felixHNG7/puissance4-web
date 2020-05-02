@@ -298,7 +298,7 @@ ai.decision = function (board, depth) {
     }
 
     Board.place(board, maxj, 2); //best computer move
-    return maxj; //returns the best move's column
+    return board; //returns the best move's column
 }
 
 

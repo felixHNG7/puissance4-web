@@ -11,34 +11,54 @@ class App extends Component {
     this.state = {
       player: '1',
       board: [
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
       ],
       winner: '',
     };
   }
 
-  componentDidMount() {
-    fetch('http://localhost:8070/init')
-      .catch((error) => console.error(error));
-  }
 
-  async isOver(player, j) {
-    await fetch("http://localhost:8070/over")
+
+  async isOver() {
+
+    await fetch("http://localhost:8070/over", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(this.state.board),
+    })
       .then((response) => response.text())
       .then(response => this.setState({ winner: response }))
       .catch((error) => console.error(error));
+
+    if (this.state.winner === '1') {
+      alert("You won");
+
+    }
+    else if (this.state.winner === '2') {
+      alert("Computer won");
+    }
+
   }
 
 
   async playbleCol(column) {
     var playable = '';
-    await fetch("http://localhost:8070/playable/" + column)
+    await fetch("http://localhost:8070/playable/" + column, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(this.state.board),
+    })
       .then((response) => response.text())
       .then((text) => playable = text)
       .catch((error) => console.error(error));
@@ -47,23 +67,44 @@ class App extends Component {
   }
 
   newGame() {
-    const newBoard =  [
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
-      [],
+    const newBoard = [
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
     ];
-    
+
     this.setState({
       board: newBoard,
-      winner:'0',
+      winner: '0',
     });
-    fetch('http://localhost:8070/init')
+
+  }
+
+  async test() {
+    var array = [
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 3, 0, 0],
+      [0, 0, 5, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0, 1, 2],
+    ];
+
+    await fetch("http://localhost:8070/array", {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(array),
+    })
+      .then((response) => response.text())
       .catch((error) => console.error(error));
-    
+
+
   }
 
 
@@ -73,63 +114,33 @@ class App extends Component {
 
     if (test === "true") {
 
-      console.log("pla col : " + column);
-      const col = this.state.board[column].concat('1');
-      const newBoard = this.state.board.slice();
-      newBoard[column] = col;
-      this.setState({
-        board: newBoard,
-      });
-
-
       //send player's move and get bot's move
-      var bot_move = '';
-      await fetch("http://localhost:8070/place/" + column)
+      
+      await fetch("http://localhost:8070/place/" + column, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(this.state.board),
+      })
         .then((response) => response.text())
-        .then((text) => bot_move = text)
-        .catch((error) => console.error(error))
+        .then((response) => this.setState({board:JSON.parse(response)}))
+        .catch((error) => console.error(error));
 
-      await this.isOver(1, column);
-
-
-      //place bot's move
-      this.placeBot(bot_move)
-
-      if (this.state.winner === '1') {
-        alert("You won");
-
-      }
-      else if (this.state.winner === '2') {
-        alert("Computer won");
-      }
-    }
+      await this.isOver();
 
 
-  }
-
-  placeBot(column) {
-    if (column < 7) {
-      console.log("b col : " + column);
-      const col = this.state.board[column].concat('2');
-      const newBoard = this.state.board.slice();
-      newBoard[column] = col;
-
-
-      this.setState({
-        board: newBoard,
-      });
     }
   }
-
-  
 
   render() {
     const cells = [];
-
-    for (let i = 5; i >= 0; i--) {
+    for (let i = 0; i < 6; i++) {
       const row = [];
       for (let j = 0; j < 7; j++) {
-        row.push(<BoardCell key={j} j={j} board={this.state.board} winner={this.state.winner} i={i} onClick={this.sendPlaceCoin.bind(this)} />);
+        console.log()
+        row.push(<BoardCell key={j} j={j} i={i} board={this.state.board} winner={this.state.winner} onClick={this.sendPlaceCoin.bind(this, j)} />);
       }
       cells.push(<div className="row" key={i}>{row}</div>)
     }
@@ -139,7 +150,8 @@ class App extends Component {
 
         <div className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer" />
         <div className="board">{cells}</div>
-        <button id="newGame" onClick={this.newGame.bind(this)}>New game</button>
+        <button id="button" onClick={this.newGame.bind(this)}>New game</button>
+       
 
       </div>
     );
