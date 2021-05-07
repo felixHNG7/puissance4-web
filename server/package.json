@@ -14,7 +14,7 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "prompt": "^1.0.0",
-    "underscore": "^1.10.2",
+    "underscore": "^1.12.1",
     "wait-console-input": "^0.1.7"
   },
   "devDependencies": {
